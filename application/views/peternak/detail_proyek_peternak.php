@@ -8,31 +8,42 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet" />
 
-
+<?php
+foreach ($gambar_utama as $d){
+    $namaGambarUtama = $d->namaGambar;
+}
+?>
 
 <div class="section">
     <div class="container">
         <?php 
             foreach ($proyek as $b){
+                if ($b->status == 0){
+                    $statusProyek = "Menungu Validasi Admin";
+                }else if ($b->status == 1){
+                    $statusProyek = "Di Publish";
+                }else if ($b->status == 2){
+                    $statusProyek = "Di Tolak";
+                }
         ?>
         <div class="row">
             <!-- Product Image & Available Colors -->
             <div class="col-sm-6">
                 <div class="product-image-large">
-                    <img src="<?php echo base_url();?>foto/<?php echo($b->foto_usaha); ?>" alt="Item Name"
+                    <img src="<?php echo base_url();?>foto/<?php cetak($namaGambarUtama); ?>" alt="Item Name"
                     height="400" width="600">
                     <br>
                 </div>
-                <h4>Foto lainnya dari Produk ini</h4>
+                <h4>Foto lainnya dari Proyek ini</h4>
                 <div id="myAlert">
                     <div id="links">
-                        <?//php
-                         //   foreach ($gambar as $c){
+                        <?php
+                            foreach ($gambar as $c){
                         ?>
-                        <a href="<?php echo base_url();?>foto/<?//php cetak($c->nama_gambar); ?>" title="Produk">
-                            <img src="<?php echo base_url();?>foto/<?//php cetak($c->nama_gambar); ?>" width="70" height="70" alt="aa">
+                        <a href="<?php echo base_url();?>foto/<?php cetak($c->namaGambar); ?>" title="Produk">
+                            <img src="<?php echo base_url();?>foto/<?php cetak($c->namaGambar); ?>" width="70" height="70" alt="aa">
                         </a>
-                       <?//php } ?>
+                       <?php } ?>
                     </div>
                 </div>
 
@@ -41,7 +52,7 @@
             <!-- End Product Image & Available Colors -->
             <!-- Product Summary & Options -->
             <div class="col-sm-6 product-details">
-                <h3> <?php echo($b->namaProyek) ?></h3>
+                <h3> <?php echo($b->namaProyek) ?> | (<?php cetak($statusProyek); ?>)</h3>
                 <br>
                 <table class="shop-item-selections">
                     <!-- Color Selector -->
@@ -54,7 +65,7 @@
                     <tr>
                         <td><b>Dana Terkumpul :</b></td>
                         <td>
-                            Rp. <?php echo(number_format(100000,0,',','.')); ?>
+                            Rp. <?php echo(number_format($b->saldo_proyek,0,',','.')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -67,7 +78,7 @@
                     <tr>
                         <td><b>Investor saat ini :</b></td>
                         <td>
-                           <?php echo($b->jml_investor) ?> Unit
+                           <?php echo($b->jml_investor) ?> Orang
                         </td>
                     </tr>
                     <!-- Quantity -->
@@ -157,7 +168,7 @@
                                         <th>Nominal Investasi</th>
                                     </tr>
                                     </thead>
-                                    <?php $no = $this->uri->segment(3)+1;
+                                    <?php $no = 1;
                                     ?>
                                     <tbody>
                                     <?php foreach ($investor as $b) {?>

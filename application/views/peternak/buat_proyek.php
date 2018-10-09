@@ -19,12 +19,7 @@
                         <div class="form-group">
                             <label for="register-username"><i class="icon-user"></i> <b>Target Dana</b></label>
                             <input class="form-control" id="txt_targetdana" name="txt_targetdana" type="text" placeholder=""
-                                   value="<?php echo set_value('txt_targetdana')?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="register-username"><i class="icon-user"></i> <b>Minimal Dana</b></label>
-                            <input class="form-control" id="txt_minimaldana" name="txt_minimaldana" type="text" placeholder=""
-                                   value="<?php echo set_value('txt_minimaldana')?>" required>
+                                   onkeyup="convertToRupiah(this);"  onkeypress="return hanyaAngka(event)"   value="<?php echo set_value('txt_targetdana')?>" required>
                         </div>
                         <div class="form-group">
                             <label for="register-username"><i class="icon-user"></i> <b>Lokasi proyek</b></label>
@@ -60,26 +55,59 @@
                         </div>
                         <div class="form-group">
                             <label for="register-username"><i class="icon-user"></i> <b>Kategori</b></label>
-                            <select id="txt_kategori" required name="txt_kategori" class="form-control">
+                            <select onchange="kategoriChange()" id="txt_kategori" required name="txt_kategori" class="form-control">
                                 <option value="Kambing">Kambing</option>
                                 <option value="Sapi">Sapi</option>
                                 <option value="Ayam">Ayam</option>
                             </select>
                         </div>
 
+                        <script>
+                            var d;
+                            function kategoriChange() {
+                                d = document.getElementById("txt_kategori").value;
+                                if (d == "Sapi"){
+                                    document.getElementById("txt_hasil_ternak").selectedIndex = 0;
+                                }else if (d == "Kambing"){
+                                    document.getElementById("txt_hasil_ternak").selectedIndex = 0;
+                                }else if (d == "Ayam"){
+                                    document.getElementById("txt_hasil_ternak").selectedIndex = 3;
+                                }
+                            }
+                        </script>
+
+
+                        <div class="form-group">
+                            <label for="register-username"><i class="icon-user"></i> <b>Hasil Ternak</b></label>
+                            <select id="txt_hasil_ternak" required name="txt_hasil_ternak" class="form-control">
+                                <option value="Daging">Daging</option>
+                                <option value="Telur">Telur</option>
+                                <option value="Bulu">Bulu</option>
+                                <option value="DagingTelur">Daging (Ayam) & Telur</option>
+                                <option value="DagingBulu">Daging (Kambing) & Bulu</option>
+                            </select>
+                        </div>
+
+                        <script>
+                            function tesAlert() {
+                                alert(d)
+                            }
+                        </script>
+
+                        <div class="form-group">
+                            <label for="register-username"><i class="icon-user"></i> <b>Estimasi Profit ( % )</b></label>
+                            <input class="form-control" id="txt_estimasi" name="txt_estimasi" type="text" placeholder=""
+                                   onkeypress="return hanyaAngka(event)"     value="<?php echo set_value('txt_estimasi')?>" required>
+                        </div>
+
                         <div class="form-group">
                             <label for="register-username"><i class="icon-user"></i> <b>Upload foto surat usaha</b></label>
                             <input type="file" required name="img_siup" id="img_siup" class="form-control">
                         </div>
-                        <div class="form-group">
-                            <label for="register-username"><i class="icon-user"></i> <b>Upload foto Proyek</b></label>
-                            <input type="file" required name="img_usaha" id="img_usaha" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <button type="submit" id="register_proyek" name="register_proyek" class="btn pull-right">Buat</button>
-                            <div class="clearfix"></div>
-                        </div>
+                            <div class="form-group">
+                                <button type="submit" id="register_proyek" name="register_proyek" class="btn pull-right">Next</button>
+                                <div class="clearfix"></div>
+                            </div>
                     </form>
                     <?php echo  form_close(); ?>
                 </div>
@@ -90,3 +118,4 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="<?php echo base_url();?>assets5/Pemisah.js"></script>

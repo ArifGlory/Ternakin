@@ -63,6 +63,8 @@ class Peternak extends CI_Controller
         $data['proyek'] = $proyek;
         $investor = array();
         $data['investor'] = $investor;
+        $data['gambar'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgProyekByID/'.$id_proyek));
+        $data['gambar_utama'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgUtamaProyekByID/'.$id_proyek));
 
         $this->load->view("header");
         $this->load->view("peternak/detail_proyek_peternak",$data);
@@ -71,21 +73,10 @@ class Peternak extends CI_Controller
 
     function simpanProyek(){
 
-            $nmfile = "file_".time();
+        $user = $this->session->userdata('user');
+        $idProyek =chr(rand(65,90)).chr(rand(65,90)).rand(10,100).rand(10,100);
+        $nmfile = "file_".time();
             $this->gallerypath = realpath(APPPATH.'../foto');
-
-        $this->form_validation->set_rules('txt_name','Nama','required');
-        $this->form_validation->set_rules('txt_targetdana','Target Dana','required');
-        $this->form_validation->set_rules('txt_minimaldana','Minimal dana','required');
-        $this->form_validation->set_rules('txt_lokasi','Lokasi Proyek','required');
-        $this->form_validation->set_rules('txt_deskripsi','Deskripsi','required');
-        $this->form_validation->set_rules('txt_mulai','Waktu Mulai Proyek','required');
-        $this->form_validation->set_rules('txt_akhir','Waktu Akhir Proyek','required');
-        $this->form_validation->set_rules('txt_batasgalang','Waktu batas Galang dana','required');
-        $this->form_validation->set_rules('txt_kategori','Kategori proyek','required');
-
-
-            if ($this->form_validation->run() != false) {
 
                 $config['upload_path'] = $this->gallerypath;
                 $config['allowed_types'] = 'jpg|png|jpeg';
@@ -97,50 +88,46 @@ class Peternak extends CI_Controller
                 $this->upload->do_upload('img_siup');
                 $foto_siup = $this->upload->file_name;
 
-                $config2['upload_path'] = $this->gallerypath;
-                $config2['allowed_types'] = 'jpg|png|jpeg';
-                $config2['max_size'] = 10000;
-                $config2['max_width'] = 5000;
-                $config2['max_height'] = 5000;
-                $config2['file_name'] = $nmfile;
-                $this->load->library('upload',$config2);
-                $this->upload->do_upload('img_usaha');
-                $foto_usaha = $this->upload->file_name;
-
                 $data_proyek = array(
+                    'id_proyek'=>$idProyek,
                   'namaProyek'=>$this->input->post('txt_name'),
-                    'target_dana'=>$this->input->post('txt_targetdana'),
-                    'minimal_dana'=>$this->input->post('txt_minimaldana'),
+                    'target_dana'=>preg_replace("/[^0-9]/", "", $this->input ->post('txt_targetdana')),
                     'lokasi'=>$this->input->post('txt_lokasi'),
                     'deskripsi'=>$this->input->post('txt_deskripsi'),
                     'batas_galang'=>$this->input->post('txt_batasgalang'),
                     'mulai_proyek'=>$this->input->post('txt_mulai'),
                     'akhir_proyek'=>$this->input->post('txt_akhir'),
                     'kategori'=>$this->input->post('txt_kategori'),
+                    'hasil_ternak'=>$this->input->post('txt_hasil_ternak'),
                     'foto_siup'=>$foto_siup,
-                    'foto_usaha'=>$foto_usaha,
                     'saldo_proyek'=>0,
                     'jml_investor'=>0,
-                    'idPeternak'=>$this->session->userdata("id"),
-                    'estimasi_profit'=>0
+                    'status'=>0,
+                    'idPeternak'=>$user['id'],
+                    'estimasi'=>$this->input->post('txt_estimasi')
                 );
-                $this->db->insert('temporary',$data_proyek);
-                redirect('Peternak/berhasilProyek');
 
-                //print_r($data_proyek);
-            }else{
-                $id = $this->session->userdata("id");
-                $nama = $this->session->userdata("nama");
-                $bagian = $this->session->userdata("bagian");
-                $data["id"] = $id;
-                $data["nama"] = $nama;
-                $data["bagian"] = $bagian;
+               // $this->db->insert('proyek',$data_proyek);
+        $result =   $this->curl->simple_post($this->API.'/Proyek/prosesSimpanProyek', $data_proyek, array(CURLOPT_BUFFERSIZE => 10));
+        if ($result) {
+            echo "berhasil upload proyek";
+        } else {
+            echo "gagal upload proyek";
+        }
+                // print_r($data_proyek);
 
-                $this->load->view("header",$data);
-                $this->load->view("peternak/buat_proyek",$data);
-                $this->load->view("footer");
-            }
+                $ses_id_proyek = array(
+                    'idProyek' => $idProyek
+                );
+                $this->session->set_userdata('idProyek',$ses_id_proyek);
+                redirect('Peternak/inputGambarProyek');
 
+    }
+
+    function inputGambarProyek(){
+        $this->load->view("header");
+        $this->load->view("peternak/upload_foto_proyek");
+        $this->load->view("footer");
     }
 
 
@@ -150,8 +137,8 @@ class Peternak extends CI_Controller
 
     function berhasilProyek(){
 
-        $this->load->view("header",$data);
-        $this->load->view("peternak/berhasil_proyek",$data);
+        $this->load->view("header");
+        $this->load->view("peternak/berhasil_proyek");
         $this->load->view("footer");
     }
 

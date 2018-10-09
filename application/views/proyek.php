@@ -22,7 +22,11 @@
                 <div class="shop-item">
                     <!-- Product Image -->
                     <div class="image">
-                        <a href="<?php echo base_url();?>Utama/detailProyek/<?php echo $b->id_proyek; ?>"><img src="<?php echo base_url();?>foto/<?php echo $b->foto_usaha;?>" alt="Item Name"></a>
+                        <?php foreach ($gambar as $c){
+                            if ($c->id_proyek == $b->id_proyek){
+                         ?>
+                        <a href="<?php echo base_url();?>Utama/detailProyek/<?php echo $b->id_proyek; ?>"><img src="<?php echo base_url();?>foto/<?php cetak($c->namaGambar);?>" alt="Item Name"></a>
+                    <?php } } ?>
                     </div>
                     <!-- Product Title -->
                     <div class="title">

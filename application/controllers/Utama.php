@@ -123,8 +123,11 @@ class Utama extends CI_Controller
         $from = $this->uri->segment(3);
         $this->pagination->initialize($config);
         $data['data_proyek'] = json_decode($this->curl->simple_get($this->API.'/Proyek/listProyek/'));
+        $data['gambar'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getAllImgUtama/'));
 
-        $this->load->view("header");
+       // print_r($data['data_proyek']);
+
+       $this->load->view("header");
         $this->load->view("proyek",$data);
         $this->load->view("footer");
     }
@@ -137,15 +140,12 @@ class Utama extends CI_Controller
     }
 
     function daftarInvestor(){
-        $id = $this->session->userdata("id");
-        $nama = $this->session->userdata("nama");
-        $bagian = $this->session->userdata("bagian");
-        $data["id"] = $id;
-        $data["nama"] = $nama;
-        $data["bagian"] = $bagian;
 
-        $this->load->view("header",$data);
-        $this->load->view("register_investor",$data);
+       // $this->session->set_flashdata('error','eror boy!');
+     //   $this->session->set_flashdata('error',null);
+
+        $this->load->view("header");
+        $this->load->view("register_investor");
         $this->load->view("footer");
     }
 
@@ -160,6 +160,8 @@ class Utama extends CI_Controller
 
         $peternak = json_decode($this->curl->simple_get($this->API.'/Peternak/detailPeternak/'.$idPeternak));
         $data['peternak'] = $peternak;
+        $data['gambar'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgProyekByID/'.$id_proyek));
+        $data['gambar_utama'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgUtamaProyekByID/'.$id_proyek));
 
         $this->load->view("header");
         $this->load->view("detail_proyek_user",$data);
@@ -234,8 +236,6 @@ class Utama extends CI_Controller
     function simpanInvestor(){
 
 
-            if ($this->form_validation->run() != false){
-
                 $password1 = $this->input->post('txt_password');
                 $password2 = $this->input->post('txt_konfir_psw');
 
@@ -244,51 +244,27 @@ class Utama extends CI_Controller
                     $enkripsi = $this->encryption->encrypt($password1);
 
                     $data_investor = array(
+                        'idInvestor'=>chr(rand(65,90)).chr(rand(65,90)).rand(10,100).rand(10,100),
                         'namaInvestor'=>$this->input->post('txt_name'),
                         'email'=>$this->input->post('txt_email'),
                         'password'=>$enkripsi,
                         'no_telp'=>$this->input->post('txt_notelp'),
                         'no_rek'=>$this->input->post('txt_norek'),
-                        'nik'=>$this->input->post('txt_nik'),
-                        'npwp'=>$this->input->post('txt_npwp'),
-                        'saldo_wallet'=>900000000
+                        'saldo_wallet'=>0
                     );
-                    $this->db->insert('investor',$data_investor);
 
-                    $this->session->set_flashdata('success','Berhasil!');
+                    $this->session->set_flashdata('error',null);
+                    $this->curl->simple_post($this->API.'/Akun/prosesSimpanInvestor', $data_investor, array(CURLOPT_BUFFERSIZE => 10));
                     redirect('Utama/berhasilDaftarInvestor');
                 }else{
 
                     $this->session->set_flashdata('error','Konfirmasi Password tidak valid !');
-
-                    $id = $this->session->userdata("id");
-                    $nama = $this->session->userdata("nama");
-                    $bagian = $this->session->userdata("bagian");
-                    $data["id"] = $id;
-                    $data["nama"] = $nama;
-                    $data["bagian"] = $bagian;
-
-
-                    $this->load->view("header",$data);
-                    echo "Konfirmassi Passsword tidak valid";
-                    $this->load->view("register_investor",$data);
+                    $this->load->view("header");
+                    $this->load->view("register_investor");
                     $this->load->view("footer");
                 }
-            }else{
-                $this->session->set_flashdata('error','Ada data yang kurang !');
-
-                $id = $this->session->userdata("id");
-                $nama = $this->session->userdata("nama");
-                $bagian = $this->session->userdata("bagian");
-                $data["id"] = $id;
-                $data["nama"] = $nama;
-                $data["bagian"] = $bagian;
-
-                $this->load->view("header",$data);
-                $this->load->view("register_investor",$data);
-                $this->load->view("footer");
             }
-        }
+
 
 
 }

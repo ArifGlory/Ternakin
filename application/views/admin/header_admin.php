@@ -14,6 +14,12 @@
     <!-- Page-Level CSS -->
     <link href="<?php echo base_url();?>assets3/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
 
+    <link href="<?php echo base_url();?>assets3/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+
+    <script src="<?php echo base_url();?>assets1/js/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+    <script src="<?php echo base_url();?>assets3/SweetAlert/sweetalert.min.js"></script>
+
     <script src="<?php echo base_url();?>/assets2/js/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/assets2/js/dropzone.min.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets2/js/basic.min.css">

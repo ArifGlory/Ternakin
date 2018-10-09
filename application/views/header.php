@@ -28,6 +28,14 @@
 
     <script src="<?php echo base_url();?>assets1/js/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     <script src="<?php echo base_url();?>assets3/SweetAlert/sweetalert.min.js"></script>
+
+    <script src="<?php echo base_url();?>/assets2/js/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>/assets2/js/dropzone.min.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets2/js/basic.min.css">
+    <script type="text/javascript" src="<?php echo base_url();?>/assets2/js/jquery.js"></script>
+    <script type="text/javascript" src="<?php echo base_url();?>/assets2/js/dropzone.min.js"></script>
+    <script src="<?php echo base_url();?>/assets2/js/jquery.min.js"></script>
+    <script src="<?php echo base_url();?>/assets2/js/scripts.js"></script>
 </head>
 <body>
 <!--[if lt IE 7]>
@@ -49,11 +57,20 @@
                 </li>
                 <?php
                 if (!empty($user['id'])){
-                ?>
-                    <li>
-                        <a href="<?php echo base_url();?>Peternak">Dashboard</a>
-                    </li>
-                <?php } ?>
+                    if ($user['bagian'] == "peternak") {
+                        ?>
+                        <li>
+                            <a href="<?php echo base_url(); ?>Peternak">Dashboard</a>
+                        </li>
+                        <?php
+                    }else if ($user['bagian'] == "investor"){
+                        ?>
+                        <li>
+                            <a href="<?php echo base_url(); ?>Investor">Dashboard</a>
+                        </li>
+                <?php
+                    }
+                    } ?>
 
                 <li class="pull-right" style="padding-top: 20px;color: white">
                     <?php

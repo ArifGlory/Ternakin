@@ -12,39 +12,72 @@ class Investor extends CI_Controller
     function __construct()
     {
         parent::__construct();
+        $this->API="http://localhost/rest_ci/";
+        $this->load->library('curl');
+        $this->load->helper(array('url'));
         $this->load->helper(array('form'));
         $this->load->library(array('form_validation','session','encryption','pagination'));
-        $this->load->model('m_proyek');
-        $this->load->model('m_akun');
 
-        if ($this->session->userdata("status") != "login"){
-            redirect('Login/loginInvestor');
-        }
-        if ($this->session->userdata("status") != "login" && $this->session->userdata("bagian") != "investor"){
-            redirect('Login/loginInvestor');
+
+        $userSession = $this->session->userdata('user');
+        if ($userSession['bagian'] != "investor"){
+            redirect('Login');
         }
     }
 
     function index(){
-        $id = $this->session->userdata("id");
-        $nama = $this->session->userdata("nama");
-        $bagian = $this->session->userdata("bagian");
-        $data["id"] = $id;
-        $data["nama"] = $nama;
-        $data["bagian"] = $bagian;
 
-        $this->load->view("header",$data);
-        $this->load->view("dashboard_investor",$data);
+        $userSession = $this->session->userdata('user');
+        $idInvestor = $userSession['id'];
+        $proyekDiambil = json_decode($this->curl->simple_get($this->API.'/Proyek/getProyekInvestor/'.$idInvestor));
+       // print_r($proyekDiambil['']);
+        $data['proyek'] = $proyekDiambil;
+
+        $this->load->view("header");
+        $this->load->view("investor/dashboard_investor",$data);
+        $this->load->view("footer");
+    }
+
+    function detailProyek($idProyek){
+        $proyek = json_decode($this->curl->simple_get($this->API.'/Proyek/detailProyek/'.$idProyek));
+        $data['proyek'] = $proyek;
+
+        $this->load->view("header");
+        $this->load->view("investor/detail_proyek_investor",$data);
+        $this->load->view("footer");
+    }
+
+    function wallet(){
+
+        $data['wallet'] = array();
+
+        $this->load->view("header");
+        $this->load->view("investor/wallet_investor",$data);
+        $this->load->view("footer");
+    }
+
+    function topUp(){
+        $this->load->view("header");
+        $this->load->view("investor/topup_saldo");
+        $this->load->view("footer");
+    }
+
+    function prosesTopUp(){
+        $jml_topUp = preg_replace("/[^0-9]/", "", $this->input ->post('txt_jmltoptup'));
+        $jml_topUp = (int)$jml_topUp;
+        $kodeUnik = (rand(10,100));
+        $totalTopUp = 0;
+        $totalTopUp = $jml_topUp + $kodeUnik;
+
+
+        $data['totalTopUp'] = $totalTopUp;
+
+        $this->load->view("header");
+        $this->load->view("investor/topup_saldo_next",$data);
         $this->load->view("footer");
     }
 
     function lakukanInvestasi(){
-        $id = $this->session->userdata("id");
-        $nama = $this->session->userdata("nama");
-        $bagian = $this->session->userdata("bagian");
-        $data["id"] = $id;
-        $data["nama"] = $nama;
-        $data["bagian"] = $bagian;
 
         $id_proyek = $this->input->post('txt_id_proyek');
 
@@ -79,12 +112,6 @@ class Investor extends CI_Controller
             redirect('Investor/berhasilInvest');
 
         }else{
-            $id = $this->session->userdata("id");
-            $nama = $this->session->userdata("nama");
-            $bagian = $this->session->userdata("bagian");
-            $data["id"] = $id;
-            $data["nama"] = $nama;
-            $data["bagian"] = $bagian;
 
             $proyek = $this->m_proyek->getDetailProyek($id_proyek)->row_array();
             $id_peternak = $proyek['idPeternak'];
@@ -99,15 +126,10 @@ class Investor extends CI_Controller
     }
 
     function berhasilInvest(){
-        $id = $this->session->userdata("id");
-        $nama = $this->session->userdata("nama");
-        $bagian = $this->session->userdata("bagian");
-        $data["id"] = $id;
-        $data["nama"] = $nama;
-        $data["bagian"] = $bagian;
 
-        $this->load->view("header",$data);
-        $this->load->view("berhasil_invest",$data);
+
+        $this->load->view("header");
+        $this->load->view("berhasil_invest");
         $this->load->view("footer");
     }
 

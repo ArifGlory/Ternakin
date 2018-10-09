@@ -138,25 +138,30 @@ class Login extends CI_Controller
     }
 
     function signInInvestor(){
-
         $id = $this->input->post("txt_id");
         $pass = $this->input->post("txt_pass");
 
-        $cek = $this->db->get_where('investor',array('email'=>$id))->num_rows();
-        $result = $this->db->get_where('investor',array('email'=>$id))->result();
+        $dataEmail = array(
+            'email'=>$id
+        );
 
-        if ($cek != 0){
-            $pass_didb = $this->encryption->decrypt($result[0]->password);
+        $check =  $this->curl->simple_post($this->API.'/Login/getCheckInvestor', $dataEmail, array(CURLOPT_BUFFERSIZE => 10));
+        $dataInvestor = json_decode($this->curl->simple_post($this->API.'/Login/getDataInvestor', $dataEmail, array(CURLOPT_BUFFERSIZE => 10)));
+
+
+        if ($check != 0){
+            $pass_didb = $this->encryption->decrypt($dataInvestor[0]->password);
 
             if ($pass_didb == $pass){
                 $data_session = array(
-                    'id'=>$result[0]->idInvestor,
-                    'nama'=>$result[0]->namaInvestor,
-                    'status'=>"login",
-                    'bagian'=>"investor"
+                    'id'=>$dataInvestor[0]->idInvestor,
+                    'nama'=>$dataInvestor[0]->namaInvestor,
+                    'bagian'=>"investor",
+                    'saldo'=>$dataInvestor[0]->saldo_wallet
                 );
-                $this->session->set_userdata($data_session);
-                redirect('Utama/listProyek');
+                $this->session->set_userdata('user',$data_session);
+                redirect('Investor');
+
             }else{
                 redirect('Login/gagalInvestor');
             }

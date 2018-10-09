@@ -8,11 +8,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet" />
 
-<?php
-foreach ($gambar_utama as $d){
-    $namaGambarUtama = $d->namaGambar;
-}
-?>
+
 
 <div class="section">
     <div class="container">
@@ -23,20 +19,20 @@ foreach ($gambar_utama as $d){
             <!-- Product Image & Available Colors -->
             <div class="col-sm-6">
                 <div class="product-image-large">
-                    <img src="<?php echo base_url();?>foto/<?php cetak($namaGambarUtama); ?>" alt="Item Name"
-                         height="400" width="600">
+                    <img src="<?php echo base_url();?>foto/<?php echo($b->foto_usaha); ?>" alt="Item Name"
+                    height="400" width="600">
                     <br>
                 </div>
-                <h4>Foto lainnya dari Proyek ini</h4>
+                <h4>Foto lainnya dari Produk ini</h4>
                 <div id="myAlert">
                     <div id="links">
-                        <?php
-                        foreach ($gambar as $c){
-                            ?>
-                            <a href="<?php echo base_url();?>foto/<?php cetak($c->namaGambar); ?>" title="Produk">
-                                <img src="<?php echo base_url();?>foto/<?php cetak($c->namaGambar); ?>" width="70" height="70" alt="aa">
-                            </a>
-                        <?php } ?>
+                        <?//php
+                         //   foreach ($gambar as $c){
+                        ?>
+                        <a href="<?php echo base_url();?>foto/<?//php cetak($c->nama_gambar); ?>" title="Produk">
+                            <img src="<?php echo base_url();?>foto/<?//php cetak($c->nama_gambar); ?>" width="70" height="70" alt="aa">
+                        </a>
+                       <?//php } ?>
                     </div>
                 </div>
 
@@ -69,9 +65,21 @@ foreach ($gambar_utama as $d){
                     </tr>
                     <!-- Size Selector -->
                     <tr>
-                        <td><b>Investor saat ini :</b></td>
+                        <td><b>Investasi anda :</b></td>
                         <td>
-                           <?php echo($b->jml_investor) ?> Unit
+                           Rp.1.000.000
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Estimasi Profit :</b></td>
+                        <td>
+                            10%
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Uang Kembali :</b></td>
+                        <td>
+                            Rp. 1.100.0000
                         </td>
                     </tr>
                     <!-- Quantity -->
@@ -93,19 +101,11 @@ foreach ($gambar_utama as $d){
                 </div>
                 <br><br>
 
-                <!-- skill bar disini-->
-
-
 
 
                 <div class="col-sm-4">
                     <br>
                 </div>
-
-                <?php echo form_open_multipart('Utama/invest')?>
-                <input type="hidden" value="<?php echo($b->id_proyek) ?>" id="txt_id" name="txt_id">
-                <button class="btn btn-green btn-lg" type="submit">Investasi di Proyek ini</button>
-                <?php  echo form_close() ;?>
 
                 <script>
                     function sweet (){
@@ -127,6 +127,8 @@ foreach ($gambar_utama as $d){
                 </script>
 
             </div>
+
+
 
 
             <!-- The Gallery as lightbox dialog, should be a child element of the document body -->
@@ -151,6 +153,7 @@ foreach ($gambar_utama as $d){
             </div>
         </div>
         <?php }?>
+
     </div>
 </div>
 <script>

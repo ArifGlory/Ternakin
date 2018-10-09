@@ -7,6 +7,9 @@
         $idPeternak = $c->idPeternak;
         $namaPeternak = $c->namaPeternak;
     }
+    foreach ($gambar_utama as $c){
+        $namaGambarUtama = $c->namaGambar;
+    }
     ?>
     <?php
     function rupiah($angka){
@@ -44,7 +47,7 @@
                         </div>
 
                         <div class="col-md-6" align="center">
-                            <img src="<?php echo base_url();?>foto/<?php echo $foto_usaha;?>" width="400" height="300">
+                            <img src="<?php echo base_url();?>foto/<?php cetak($namaGambarUtama);?>" width="400" height="300">
                             <br><br>
                         </div>
 

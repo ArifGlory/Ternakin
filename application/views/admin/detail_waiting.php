@@ -3,6 +3,9 @@
     <br><br>
     <?php
     $no = 1;
+    foreach ($gambar_utama as $c){
+        $namaGambarUtama = $c->namaGambar;
+    }
     ?>
     <?php
     function rupiah($angka){
@@ -67,7 +70,7 @@
                         <tr>
                             <td>Foto Usaha</td>
                             <td align="center">
-                                <img src="<?php echo base_url();?>/foto/<?php echo $temporary['foto_usaha'];?>" width="300" height="300">
+                                <img src="<?php echo base_url();?>/foto/<?php cetak($namaGambarUtama); ?>" width="300" height="300">
                             </td>
                         </tr>
                         </tbody>
