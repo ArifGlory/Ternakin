@@ -189,6 +189,152 @@ class Admin extends CI_Controller
         $this->load->view("admin/detail_peternak",$data);
     }
 
+    function listTopup(){
+        $data['topup'] = json_decode($this->curl->simple_get($this->API.'/Investor/listTopupUnverifyAdmin/'));
+        $data['verified'] = "false";
+
+        $this->load->view("admin/header_admin");
+        $this->load->view("admin/sidebar_admin");
+        $this->load->view("admin/list_data_topup",$data);
+    }
+
+    function listTopupVerified(){
+        $data['topup'] = json_decode($this->curl->simple_get($this->API.'/Investor/listTopupVerifyAdmin/'));
+        $data['verified'] = "true";
+
+        $this->load->view("admin/header_admin");
+        $this->load->view("admin/sidebar_admin");
+        $this->load->view("admin/list_data_topup",$data);
+    }
+
+    function detailTopup($idTopup){
+
+        $topup = json_decode($this->curl->simple_get($this->API.'/Investor/detailTopup/'.$idTopup));
+
+        $data['topup'] = json_decode($this->curl->simple_get($this->API.'/Investor/detailTopup/'.$idTopup));
+        $idInvestor = $topup[0]->idInvestor;
+        $data['investor'] = json_decode($this->curl->simple_get($this->API.'/Investor/detailInvestor/'.$idInvestor));
+
+        $this->load->view("admin/header_admin");
+        $this->load->view("admin/sidebar_admin");
+        $this->load->view("admin/detail_topup_admin",$data);
+    }
+
+    function terimaTopup($idTopup){
+        $topup = json_decode($this->curl->simple_get($this->API.'/Investor/detailTopup/'.$idTopup));
+
+        $data['topup'] = $topup;
+        $idInvestor = $topup[0]->idInvestor;
+        $saldoTopup = $topup[0]->jmlTopup;
+        $investor = json_decode($this->curl->simple_get($this->API.'/Investor/detailInvestor/'.$idInvestor));
+        $namaInvestor = $investor[0]->namaInvestor;
+        $emailInvestor = $investor[0]->email;
+
+
+        $dataTopup = array(
+            'idTopup'=>$idTopup,
+            'idInvestor'=>$idInvestor,
+            'saldoTopup'=>$saldoTopup
+        );
+
+        $result = $this->curl->simple_post($this->API.'/Investor/terimaTopup', $dataTopup, array(CURLOPT_BUFFERSIZE => 10));
+
+        if ($result) {
+            echo "berhasil ubah status";
+        } else {
+            echo "gagal ubah status";
+        }
+
+         //kriim notifikasi Email.
+
+        $data['namaInvestor'] = $namaInvestor;
+
+        $notif = $this->load->view('invoice_new',$data,TRUE);
+
+        $config['protocol'] = "smtp";
+        $config['smtp_host'] = "ssl://smtp.gmail.com";
+        $config['smtp_port'] = "465";
+        $config['smtp_user'] = "tapisdev@gmail.com";
+        $config['smtp_pass'] = "t4p15d3v";
+        $config['charset'] = "utf-8";
+        $config['mailtype'] = "html";
+        $config['newline'] = "\r\n";
+
+        $this->load->library('email');
+        $this->email->initialize($config);
+
+        $from_email = "tapisdev@gmail.com";
+        //$emailInvestor= 'arifglory46@gmail.com' ;
+
+        $this->email->from($from_email,"Admin Ternak.in");
+        $this->email->to($emailInvestor);
+        $this->email->subject('Verifikasi Topup');
+        $this->email->message($notif);
+        $this->email->send();
+        $this->load->view('invoice_new',$data);
+
+        redirect('Admin/listTopupVerified');
+    }
+
+    function tolakTopup($idTopup){
+
+        $dataTopupHapus = array(
+            'idTopup'=>$idTopup
+        );
+
+        $topup = json_decode($this->curl->simple_get($this->API.'/Investor/detailTopup/'.$idTopup));
+
+        $data['topup'] = $topup;
+        $idInvestor = $topup[0]->idInvestor;
+        $saldoTopup = $topup[0]->jmlTopup;
+        $investor = json_decode($this->curl->simple_get($this->API.'/Investor/detailInvestor/'.$idInvestor));
+        $namaInvestor = $investor[0]->namaInvestor;
+        $emailInvestor = $investor[0]->email;
+
+
+        $dataTopup = array(
+            'idTopup'=>$idTopup,
+            'idInvestor'=>$idInvestor,
+            'saldoTopup'=>$saldoTopup
+        );
+
+        $result = $this->curl->simple_post($this->API.'/Investor/tolakTopup', $dataTopupHapus, array(CURLOPT_BUFFERSIZE => 10));
+
+        if ($result) {
+            echo "berhasil ubah status";
+        } else {
+            echo "gagal ubah status";
+        }
+
+        $data['namaInvestor'] = $namaInvestor;
+
+        $notif = $this->load->view('invoice_tolak',$data,TRUE);
+
+        $config['protocol'] = "smtp";
+        $config['smtp_host'] = "ssl://smtp.gmail.com";
+        $config['smtp_port'] = "465";
+        $config['smtp_user'] = "tapisdev@gmail.com";
+        $config['smtp_pass'] = "t4p15d3v";
+        $config['charset'] = "utf-8";
+        $config['mailtype'] = "html";
+        $config['newline'] = "\r\n";
+
+        $this->load->library('email');
+        $this->email->initialize($config);
+
+        $from_email = "tapisdev@gmail.com";
+        //$emailInvestor= 'arifglory46@gmail.com' ;
+
+        $this->email->from($from_email,"Admin Ternak.in");
+        $this->email->to($emailInvestor);
+        $this->email->subject('Verifikasi Topup');
+        $this->email->message($notif);
+        $this->email->send();
+        $this->load->view('invoice_tolak',$data);
+
+        redirect('Admin/listTopup');
+    }
+
 
 
 }

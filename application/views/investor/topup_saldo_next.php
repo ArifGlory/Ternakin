@@ -57,7 +57,9 @@
                                             <h4>a.n Ternakin</h4>
                                             <br>
 
-                                            <h4>Topup sejumlah: Rp. <?php echo number_format($totalTopUp,0,',','.'); ?> </h4>
+                                            <h4>Transfer sejumlah: Rp. <?php echo number_format($totalTopUp,0,',','.'); ?> </h4>
+                                            <br>
+                                            <h4>Kami akan memberikan Verifikasi Pembayaran melalui Email, Terima kasih.</h4>
                                             <br>
                                         </div>
                                     </div>

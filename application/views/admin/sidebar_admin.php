@@ -32,6 +32,12 @@
             <li>
                 <a href="<?php echo base_url();?>Admin/listProyek"><i class="fa fa-clipboard fa-fw"></i>Proyek</a>
             </li>
+            <li>
+                <a href="<?php echo base_url();?>Admin/listTopup"><i class="fa fa-shopping-cart fa-fw"></i>List Topup</a>
+            </li>
+            <li>
+                <a href="<?php echo base_url();?>Admin/listTopupVerified"><i class="fa fa-shopping-cart fa-fw"></i>Riwayat Topup</a>
+            </li>
          <!--   <li>
                 <a href="#"><i class="fa fa-user fa-fw"></i> Data Pengguna<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">

@@ -52,13 +52,19 @@ foreach ($gambar_utama as $d){
                     <tr>
                         <td> <b>Jenis :</b></td>
                         <td>
-
+                            <?php cetak($b->kategori); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> <b>Hasil Ternak</b></td>
+                        <td>
+                            <?php cetak($b->hasil_ternak); ?>
                         </td>
                     </tr>
                     <tr>
                         <td><b>Dana Terkumpul :</b></td>
                         <td>
-                            Rp. <?php echo(number_format(100000,0,',','.')); ?>
+                            Rp. <?php echo(number_format($b->saldo_proyek,0,',','.')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -82,8 +88,8 @@ foreach ($gambar_utama as $d){
 
                 </div>
                 <div class="progress">
-                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
-                        40%
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="<?php cetak($persentase); ?>" aria-valuemin="0" aria-valuemax="100" style="width:<?php cetak($persentase); ?>%">
+                        <?php cetak($persentase); ?>%
                     </div>
                 </div>
                 <div class="col-sm-12 product-image-large">

@@ -17,6 +17,39 @@ class Gambar extends CI_Controller {
         $this->load->library(array('form_validation','session','encryption','pagination'));
 
     }
+
+
+    function uploadBuktiTopup(){
+        $config['upload_path']   = FCPATH.'/foto/bukti_bayar/';
+        $config['allowed_types'] = 'gif|jpg|png|ico';
+        $config['file_name']     = chr(rand(65,90)).rand(10,100).rand(10,100);
+
+        $this->load->library('upload',$config);
+        $idTopup = $this->input->post('txt_id');
+
+        $dataBuktiBayar = array(
+            'foto_bukti'=>$this->upload->data('file_name'),
+            'idTopup'=>$idTopup
+        );
+
+        if($this->upload->do_upload('userfile')){
+
+            $dataBuktiBayar = array(
+              'foto_bukti'=>$this->upload->data('file_name'),
+                'idTopup'=>$idTopup
+            );
+
+
+            $result =  $this->curl->simple_post($this->API.'/Investor/prosesUpdateBukti',$dataBuktiBayar, array(CURLOPT_BUFFERSIZE => 10));
+            if ($result) {
+                echo "berhasil upload bukti";
+            } else {
+                echo "gagal upload bukti";
+            }
+        }
+
+        redirect('Investor/detailTopUp/'.$idTopup);
+    }
     
     //Untuk proses upload foto
 	function proses_upload(){

@@ -65,8 +65,14 @@
                                             <tr>
                                                 <td><?php echo $no++;?></td>
                                                 <td><?php echo date('d-F-Y',strtotime($b->tanggal_topup));?></td>
-                                                <td>Rp. <?php cetak(number_format($b->jml_topup,0,',','.')); ?></td>
-                                                <td><?php echo $b->status; ?></td>
+                                                <td>Rp. <?php cetak(number_format($b->jmlTopup,0,',','.')); ?></td>
+                                                <?php if ( $b->status == 0){ ?>
+                                                    <td>Belum diverifikasi</td>
+                                                <?php } else if ($b->status == 1) { ?>
+                                                    <td>Telah diverifikasi</td>
+                                                <?php } else if ($b->status == 2){ ?>
+                                                    <td>Topup ditolak</td>
+                                                <?php } ?>
                                                 <td style="width: 190px;" align="center">
                                                     <div>
                                                         <a href="<?php echo base_url();?>Investor/detailTopUp/<?php cetak($b->idTopup) ?>" class="btn btn-success btn-xs">Lihat</a>

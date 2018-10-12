@@ -66,6 +66,11 @@ class Peternak extends CI_Controller
         $data['gambar'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgProyekByID/'.$id_proyek));
         $data['gambar_utama'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgUtamaProyekByID/'.$id_proyek));
 
+        $saldoProyek = $proyek[0]->saldo_proyek;
+        $targetDana = $proyek[0]->target_dana;
+        $persentase = ($saldoProyek / $targetDana) * 100;
+        $data['persentase'] = $persentase;
+
         $this->load->view("header");
         $this->load->view("peternak/detail_proyek_peternak",$data);
         $this->load->view("footer");

@@ -158,10 +158,16 @@ class Utama extends CI_Controller
             $idPeternak = $b->idPeternak;
         }
 
+        $saldoProyek = $proyek[0]->saldo_proyek;
+        $targetDana = $proyek[0]->target_dana;
+        $persentase = ($saldoProyek / $targetDana) * 100;
+
+
         $peternak = json_decode($this->curl->simple_get($this->API.'/Peternak/detailPeternak/'.$idPeternak));
         $data['peternak'] = $peternak;
         $data['gambar'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgProyekByID/'.$id_proyek));
         $data['gambar_utama'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgUtamaProyekByID/'.$id_proyek));
+        $data['persentase'] = $persentase;
 
         $this->load->view("header");
         $this->load->view("detail_proyek_user",$data);

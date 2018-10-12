@@ -8,6 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Investor extends CI_Controller
 {
+    var $idInvestor;
     var $gallerypath;
     function __construct()
     {
@@ -23,6 +24,7 @@ class Investor extends CI_Controller
         if ($userSession['bagian'] != "investor"){
             redirect('Login');
         }
+        $this->idInvestor = $userSession['id'];
     }
 
     function index(){
@@ -49,7 +51,8 @@ class Investor extends CI_Controller
 
     function wallet(){
 
-        $data['wallet'] = array();
+        $idInvestor = $this->idInvestor;
+        $data['wallet'] = json_decode($this->curl->simple_get($this->API.'/Investor/getWalletInvestor/'.$idInvestor));
 
         $this->load->view("header");
         $this->load->view("investor/wallet_investor",$data);
@@ -69,11 +72,32 @@ class Investor extends CI_Controller
         $totalTopUp = 0;
         $totalTopUp = $jml_topUp + $kodeUnik;
 
+        $dataTopUp = array(
+          'idTopup'=>chr(rand(65,90)).chr(rand(65,90)).rand(10,100).rand(10,100),
+            'kodeUnik'=>$kodeUnik,
+            'jmlTopup'=>$totalTopUp,
+            'tanggal_topup'=>date('Y-m-d H:i:s'),
+            'status'=>0,
+            'idInvestor'=>$this->idInvestor
+
+        );
+
+        $this->curl->simple_post($this->API.'/Investor/prosesSimpanTopUp', $dataTopUp, array(CURLOPT_BUFFERSIZE => 10));
 
         $data['totalTopUp'] = $totalTopUp;
 
+
         $this->load->view("header");
         $this->load->view("investor/topup_saldo_next",$data);
+        $this->load->view("footer");
+    }
+
+    function detailTopUp($idTopup){
+
+        $data['topup'] = json_decode($this->curl->simple_get($this->API.'/Investor/detailTopUp/'.$idTopup));
+
+        $this->load->view("header");
+        $this->load->view("investor/detail_topup",$data);
         $this->load->view("footer");
     }
 
