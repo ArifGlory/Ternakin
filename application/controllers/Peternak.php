@@ -61,10 +61,14 @@ class Peternak extends CI_Controller
 
         $proyek = json_decode($this->curl->simple_get($this->API.'/Proyek/detailProyek/'.$id_proyek));
         $data['proyek'] = $proyek;
-        $investor = array();
+        $investor = json_decode($this->curl->simple_get($this->API.'/Peternak/getInvestorDiProyek/'.$id_proyek));
         $data['investor'] = $investor;
         $data['gambar'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgProyekByID/'.$id_proyek));
         $data['gambar_utama'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgUtamaProyekByID/'.$id_proyek));
+
+        $jml_data =  json_decode($this->curl->simple_get($this->API.'/Proyek/getJmlInvestor/'.$id_proyek));
+
+        $data['jmlInvestor'] = $jml_data;
 
         $saldoProyek = $proyek[0]->saldo_proyek;
         $targetDana = $proyek[0]->target_dana;
@@ -109,7 +113,8 @@ class Peternak extends CI_Controller
                     'jml_investor'=>0,
                     'status'=>0,
                     'idPeternak'=>$user['id'],
-                    'estimasi'=>$this->input->post('txt_estimasi')
+                    'estimasi'=>$this->input->post('txt_estimasi'),
+                    'keuntungan'=>0
                 );
 
                // $this->db->insert('proyek',$data_proyek);

@@ -55,7 +55,7 @@
                                                 <td>Rp. <?php cetak(number_format($b->jml_invest,0,',','.')); ?></td>
                                                 <td style="width: 190px;" align="center">
                                                     <div>
-                                                        <a href="<?php echo base_url();?>Investor/detailProyek/<?php cetak($b->idProyek) ?>" class="btn btn-success btn-xs">Lihat</a>
+                                                        <a href="<?php echo base_url();?>Investor/detailProyek/<?php cetak($b->id_proyek) ?>" class="btn btn-success btn-xs">Lihat</a>
                                                     </div>
                                                 </td>
                                             </tr>

@@ -44,6 +44,9 @@
                     </div>
                     <!-- Add to Cart Button -->
                     <div class="actions">
+                        <?php if ($b->status == 3){ ?>
+                        <a href="<?php echo base_url();?>Utama/detailProyek/<?php cetak($b->id_proyek) ?>" class="btn btn-success btn-xs">Proyek Sedang Dikerjakan</a>
+                        <?php } ?>
                     </div>
                 </div>
                 <!-- End Product -->

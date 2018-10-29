@@ -50,6 +50,16 @@ class Admin extends CI_Controller
 
 
         $data['proyek'] = json_decode($this->curl->simple_get($this->API.'/Proyek/listProyek/'));
+        $data['tanggalNow'] = date('Y-m-d H:i:s');
+
+        $this->load->view("admin/header_admin");
+        $this->load->view("admin/sidebar_admin");
+        $this->load->view("admin/list_data_proyek",$data);
+    }
+
+    function listProyekSelesai(){
+        $data['proyek'] = json_decode($this->curl->simple_get($this->API.'/Proyek/listProyekSelesai/'));
+        $data['tanggalNow'] = date('Y-m-d H:i:s');
 
         $this->load->view("admin/header_admin");
         $this->load->view("admin/sidebar_admin");
@@ -66,13 +76,18 @@ class Admin extends CI_Controller
             $idPeternak = $b->idPeternak;
             $status = $b->status;
             $id_proyek = $b->id_proyek;
-            $investor = $b->jml_investor;
         }
+        $investor = json_decode($this->curl->simple_get($this->API.'/Peternak/getInvestorDiProyek/'.$id_proyek));
+        $data['investor'] = $investor;
+
+        $jml_data =  json_decode($this->curl->simple_get($this->API.'/Proyek/getJmlInvestor/'.$id_proyek));
+
+        $data['jmlInvestor'] = $jml_data;
 
         $peternak = json_decode($this->curl->simple_get($this->API.'/Peternak/detailPeternak/'.$idPeternak));
         $data['peternak'] = $peternak;
         $data['status'] = $status;
-        $data['jml_investor'] = $investor;
+
         $data['id_proyek'] = $id_proyek;
 
         $this->load->view("admin/header_admin");
@@ -162,6 +177,64 @@ class Admin extends CI_Controller
 
        redirect('Admin/listProyek');
 
+
+    }
+
+    function ubahStatusProyek(){
+        $status = $this->input->post('combobx_ubahStatusProyek');
+        $idProyek = $this->input->post('txt_id');
+
+        if ($status == "4"){
+            redirect('Admin/proyekBerakhir/'.$idProyek);
+        }else {
+
+
+            $dataUpdateStatus = array(
+                'status' => $status,
+                'idProyek' => $idProyek
+            );
+
+            $result = $this->curl->simple_post($this->API . '/Proyek/ubahStatusProyek', $dataUpdateStatus, array(CURLOPT_BUFFERSIZE => 10));
+            // print_r($dataProyek['idProyek']);
+
+            if ($result) {
+                echo "berhasil ubah status";
+            } else {
+                echo "gagal ubah status";
+            }
+
+            redirect('Admin/detailProyek/' . $idProyek);
+        }
+    }
+
+    function proyekBerakhir($idProyek){
+
+        $data['idProyek'] = $idProyek;
+
+        $this->load->view("admin/header_admin");
+        $this->load->view("admin/sidebar_admin");
+        $this->load->view("admin/input_keuntungan_proyek",$data);
+    }
+
+    function simpanProyekBerakhir(){
+        $idProyek = $this->input->post('txt_id');
+        $keuntungan = $this->input->post('txt_untungProyek');
+
+        $dataProyekBerakhir = array(
+          'idProyek'=>$idProyek,
+            'keuntungan'=>$keuntungan
+        );
+
+        $result = $this->curl->simple_post($this->API.'/Proyek/proyekBerakhir', $dataProyekBerakhir, array(CURLOPT_BUFFERSIZE => 10));
+
+        if ($result) {
+            echo "berhasil ubah status";
+        } else {
+            echo "gagal ubah status";
+        }
+
+        //tambahin email juga kalo projek telah berakhir
+        redirect('Admin/detailProyek/'.$idProyek);
 
     }
 

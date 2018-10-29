@@ -10,6 +10,8 @@ class Investor extends CI_Controller
 {
     var $idInvestor;
     var $gallerypath;
+    var $saldoInvestor;
+    var $namaInvestor;
     function __construct()
     {
         parent::__construct();
@@ -22,9 +24,11 @@ class Investor extends CI_Controller
 
         $userSession = $this->session->userdata('user');
         if ($userSession['bagian'] != "investor"){
-            redirect('Login');
+            redirect('Login/loginInvestor');
         }
         $this->idInvestor = $userSession['id'];
+        $this->saldoInvestor = $userSession['saldo'];
+        $this->namaInvestor = $userSession['nama'];
     }
 
     function index(){
@@ -32,7 +36,7 @@ class Investor extends CI_Controller
         $userSession = $this->session->userdata('user');
         $idInvestor = $userSession['id'];
         $proyekDiambil = json_decode($this->curl->simple_get($this->API.'/Proyek/getProyekInvestor/'.$idInvestor));
-       // print_r($proyekDiambil['']);
+      ///  print_r($proyekDiambil);
         $data['proyek'] = $proyekDiambil;
 
         $this->load->view("header");
@@ -43,6 +47,17 @@ class Investor extends CI_Controller
     function detailProyek($idProyek){
         $proyek = json_decode($this->curl->simple_get($this->API.'/Proyek/detailProyek/'.$idProyek));
         $data['proyek'] = $proyek;
+        $jml_data =  json_decode($this->curl->simple_get($this->API.'/Proyek/getJmlInvestor/'.$idProyek));
+
+        $data['jmlInvestor'] = $jml_data;
+
+        $data['gambar'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgProyekByID/'.$idProyek));
+        $data['gambar_utama'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgUtamaProyekByID/'.$idProyek));
+
+        $saldoProyek = $proyek[0]->saldo_proyek;
+        $targetDana = $proyek[0]->target_dana;
+        $persentase = ($saldoProyek / $targetDana) * 100;
+        $data['persentase'] = $persentase;
 
         $this->load->view("header");
         $this->load->view("investor/detail_proyek_investor",$data);
@@ -101,56 +116,79 @@ class Investor extends CI_Controller
         $this->load->view("footer");
     }
 
-    function lakukanInvestasi(){
+    function lakukanInvestasi($idProyek){
 
-        $id_proyek = $this->input->post('txt_id_proyek');
+        $proyek = json_decode($this->curl->simple_get($this->API.'/Proyek/detailProyek/'.$idProyek));
+        $data['proyek'] = $proyek;
+        foreach ($proyek as $b){
+            $idPeternak = $b->idPeternak;
+        }
 
-        $this->form_validation->set_rules('txt_invest','Jumlah Investasi','required');
+        $saldoProyek = $proyek[0]->saldo_proyek;
+        $targetDana = $proyek[0]->target_dana;
+        $persentase = ($saldoProyek / $targetDana) * 100;
 
-        if ($this->form_validation->run() != false){
-            $jml_invest = $this->input->post('txt_invest');
-            $proyek = $this->m_proyek->getDetailProyek($id_proyek)->row_array();
-            $investor  = $this->m_akun->getDetailInvestor()->row_array();
-            $id_investor = $investor['idInvestor'];
-            $saldo_investor = $investor['saldo_wallet'];
-            $saldo_proyek = $proyek['saldo_proyek'];
 
-            $saldo_proyek = $saldo_proyek +$jml_invest;
-            $saldo_investor = $saldo_investor - $jml_invest;
-            //ubah dana
-            $data_saldoProyek = array(
-                'saldo_proyek'=>$saldo_proyek
+        $peternak = json_decode($this->curl->simple_get($this->API.'/Peternak/detailPeternak/'.$idPeternak));
+        $data['peternak'] = $peternak;
+        $data['gambar'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgProyekByID/'.$idProyek));
+        $data['gambar_utama'] = json_decode($this->curl->simple_get($this->API.'/Proyek/getImgUtamaProyekByID/'.$idProyek));
+        $data['persentase'] = $persentase;
+
+        $this->load->view("header");
+        $this->load->view("investor/lakukan_investasi",$data);
+        $this->load->view("footer");
+
+    }
+
+    function simpanInvestasi(){
+        $user = $this->session->userdata('user');
+        $jmlInvest = $this->input->post('txt_jmlInvest');
+        $jmlInvest = (int) $jmlInvest;
+        $saldoInvestor = (int) $this->saldoInvestor;
+        $idProyek = $this->input->post('txt_id');
+        $idInvestor = $this->idInvestor;
+        $proyek = json_decode($this->curl->simple_get($this->API.'/Proyek/detailProyek/'.$idProyek));
+        foreach ($proyek as $b){
+            $namaProyek = $b->namaProyek;
+            $saldoProyekNow = (int) $b->saldo_proyek;
+            $targetDana = $b->target_dana;
+        }
+        $saldoAfter = $saldoProyekNow + $jmlInvest;
+        $targetDana = (int) $targetDana;
+        if ($jmlInvest > $saldoInvestor){
+            $this->session->set_flashdata('error','Saldo tidak cukup');
+            redirect('Investor/lakukanInvestasi/'.$idProyek);
+        }else if ($saldoAfter > $targetDana){
+            $this->session->set_flashdata('warning','Investasi melebihi batas');
+            redirect('Investor/lakukanInvestasi/'.$idProyek);
+        }
+        else {
+
+            $dataInvestasi = array(
+                'idDetailInvestasi'=>chr(rand(65,90)).chr(rand(65,90)).rand(10,100).rand(10,100),
+              'jml_invest'=>$jmlInvest,
+                'idInvestor'=>$idInvestor,
+                'id_proyek'=>$idProyek,
+                'namaInvestor'=>$this->namaInvestor,
+                'namaProyek'=>$namaProyek,
+                'returnInvest'=>0
             );
 
-            $data_saldo_investor = array(
-                'saldo_investor'=>$saldo_investor
-            );
 
-            $this->db->where('id',$id_proyek);
-            $this->db->update('proyek',$data_saldoProyek);
 
-            //update saldo investor
-            $this->db->where('idInvestor',$id_investor);
-            $this->db->update('investor',$data_saldo_investor);
-
+            $this->curl->simple_post($this->API.'/Investor/prosesSimpanInvestasi', $dataInvestasi, array(CURLOPT_BUFFERSIZE => 10));
+            //update session saldo
+            $saldoUpdate = $saldoInvestor - $jmlInvest;
+            $user['saldo'] = $saldoUpdate;
+            $this->session->set_userdata('user', $user);
             redirect('Investor/berhasilInvest');
 
-        }else{
-
-            $proyek = $this->m_proyek->getDetailProyek($id_proyek)->row_array();
-            $id_peternak = $proyek['idPeternak'];
-            $peternak = $this->m_akun->getDetailPeternak($id_peternak)->row_array();
-            $data['proyek'] = $proyek;
-            $data['nama_peternak'] = $peternak['namaPeternak'];
-
-            $this->load->view("header",$data);
-            $this->load->view("detail_proyek",$data);
-            $this->load->view("footer");
         }
     }
 
-    function berhasilInvest(){
 
+    function berhasilInvest(){
 
         $this->load->view("header");
         $this->load->view("berhasil_invest");

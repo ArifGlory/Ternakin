@@ -27,6 +27,11 @@
     <script type="text/javascript" src="<?php echo base_url();?>/assets2/js/dropzone.min.js"></script>
     <script src="<?php echo base_url();?>/assets2/js/jquery.min.js"></script>
     <script src="<?php echo base_url();?>/assets2/js/scripts.js"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>/assets2/js/basic.min.css">
+    <script type="text/javascript" src="<?php echo base_url();?>/assets2/js/jquery.js"></script>
+    <script type="text/javascript" src="<?php echo base_url();?>/assets2/js/dropzone.min.js"></script>
+    <script src="<?php echo base_url();?>/assets2/js/jquery.min.js"></script>
+    <script src="<?php echo base_url();?>/assets2/js/scripts.js"></script>
 </head>
 
 <body>

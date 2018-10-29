@@ -24,7 +24,11 @@ foreach ($gambar_utama as $d){
                     $statusProyek = "Di Publish";
                 }else if ($b->status == 2){
                     $statusProyek = "Di Tolak";
-                }
+                }else if ($b->status == 3){
+                    $statusProyek = "Proyek Sedang dikerjakan";
+                 }else if ($b->status == 4){
+            $statusProyek = "Proyek Berakhir";
+                 }
         ?>
         <div class="row">
             <!-- Product Image & Available Colors -->
@@ -69,6 +73,18 @@ foreach ($gambar_utama as $d){
                         </td>
                     </tr>
                     <tr>
+                        <td> <b>Batas Penggalangan Dana</b></td>
+                        <td><?php echo date("d-F-Y",strtotime($b->batas_galang)); ?></td>
+                    </tr>
+                    <tr>
+                        <td> <b>Mulai Proyek</b></td>
+                        <td><?php echo date("d-F-Y",strtotime($b->mulai_proyek)); ?></td>
+                    </tr>
+                    <tr>
+                        <td> <b>Akhir Proyek</b></td>
+                        <td><?php echo date("d-F-Y",strtotime($b->akhir_proyek)); ?></td>
+                    </tr>
+                    <tr>
                         <td><b>Dana Terkumpul :</b></td>
                         <td>
                             Rp. <?php echo(number_format($b->saldo_proyek,0,',','.')); ?>
@@ -84,7 +100,7 @@ foreach ($gambar_utama as $d){
                     <tr>
                         <td><b>Investor saat ini :</b></td>
                         <td>
-                           <?php echo($b->jml_investor) ?> Orang
+                           <?php echo $jmlInvestor; ?> Orang
                         </td>
                     </tr>
                     <!-- Quantity -->
@@ -177,11 +193,11 @@ foreach ($gambar_utama as $d){
                                     <?php $no = 1;
                                     ?>
                                     <tbody>
-                                    <?php foreach ($investor as $b) {?>
+                                    <?php foreach ($investor as $c) {?>
                                         <tr>
                                             <td><?php echo $no++;?></td>
-                                            <td><?php cetak($b->namaInvesor) ?></td>
-                                            <td>Rp. <?php cetak(number_format($b->target_dana,0,',','.')); ?></td>
+                                            <td><?php cetak($c->namaInvestor) ?></td>
+                                            <td>Rp. <?php cetak(number_format($c->jml_invest,0,',','.')); ?></td>
                                         </tr>
                                     <?php }?>
                                     </tbody>

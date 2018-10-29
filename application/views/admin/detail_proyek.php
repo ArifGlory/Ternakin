@@ -10,6 +10,9 @@
     foreach ($gambar_utama as $c){
         $namaGambarUtama = $c->namaGambar;
     }
+    foreach ($proyek as $d){
+        $idProyek = $d->id_proyek;
+    }
     ?>
     <?php
     function rupiah($angka){
@@ -29,6 +32,41 @@
 		
 		
     </div>
+
+    <div class="row">
+        <div class="container" style="padding-left: 120px; padding-right: 140px">
+            <div class="col-md-12">
+                <div class="shop-item panel text-center">
+                    <div class="panel-body">
+                        <h3>Investor di Proyek ini</h3>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Nama</th>
+                                    <th>Nominal Investasi</th>
+                                </tr>
+                                </thead>
+                                <?php $no = 1;
+                                ?>
+                                <tbody>
+                                <?php foreach ($investor as $c) {?>
+                                    <tr>
+                                        <td><?php echo $no++;?></td>
+                                        <td><?php cetak($c->namaInvestor) ?></td>
+                                        <td>Rp. <?php cetak(number_format($c->jml_invest,0,',','.')); ?></td>
+                                    </tr>
+                                <?php }?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -43,7 +81,7 @@
                         <a href="<?php echo base_url();?>Admin/detailPeternak/<?php cetak($idPeternak); ?>">
                             <h2>Proyek Oleh : <?php cetak($namaPeternak); ?></h2>
                         </a>
-                        <h3> Investor saat ini : <?php cetak($jml_investor); ?></h3>
+                        <h3> Investor saat ini : <?php echo($jmlInvestor); ?></h3>
                         </div>
 
                         <div class="col-md-6" align="center">
@@ -69,6 +107,20 @@
                         <tr>
                             <td>Kategori</td>
                             <td align="center" colspan="2"> <?php cetak($b->kategori) ?></td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <?php if ($b->status == 0){ ?>
+                            <td align="center" colspan="2"> Menunggu Verifikasi</td>
+                            <?php }else if ($b->status == 1) { ?>
+                                <td align="center" colspan="2"> Proyek Aktif - Sedang Penggalangan</td>
+                            <?php }else if ($b->status == 2) { ?>
+                                <td align="center" colspan="2"> Proyek Non-Aktif</td>
+                            <?php }else if ($b->status == 3) { ?>
+                                <td align="center" colspan="2"> Proyek Sedang Dikerjakan</td>
+                            <?php }else if ($b->status == 4) { ?>
+                                <td align="center" colspan="2"> Proyek Selesai</td>
+                            <?php } ?>
                         </tr>
                         <tr>
                             <td>Target Dana</td>
@@ -128,8 +180,36 @@
                     </div>
 
                 </div>
-                <?php } ?>
+                <?php }else if ($status == 4){ ?>
 
+
+
+             <?php }  else { ?>
+
+                <div class="col-md-12">
+                    <?php echo form_open_multipart('Admin/ubahStatusProyek'); ?>
+                    <form>
+                    <div class="form-group">
+                        <input class="form-control" id="txt_id" name="txt_id" type="hidden" placeholder="" required
+                               value="<?php echo $idProyek;?>">
+
+                        <label for="register-username"><i class="icon-user"></i> <b>Ubah Status Proyek</b></label>
+                        <select id="combobx_ubahStatusProyek" required name="combobx_ubahStatusProyek" class="form-control">
+                            <option value="2">Nonaktifkan Proyek</option>
+                            <option value="3">Pindah ke Proyek Sedang Dikerjakan</option>
+                            <option value="4">Pindah ke Proyek Selesai</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" id="edit_status" name="edit_status" class="btn btn-lg btn-success">Ubah Status Proyek</button>
+                        <div class="clearfix"></div>
+                    </div>
+                    </form>
+                    <?php echo form_close();?>
+                </div>
+
+                <?php } ?>
             </div>
 
 

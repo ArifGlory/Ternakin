@@ -151,7 +151,6 @@ class Utama extends CI_Controller
 
     function detailProyek($id_proyek){
 
-
         $proyek = json_decode($this->curl->simple_get($this->API.'/Proyek/detailProyek/'.$id_proyek));
         $data['proyek'] = $proyek;
         foreach ($proyek as $b){
@@ -162,6 +161,8 @@ class Utama extends CI_Controller
         $targetDana = $proyek[0]->target_dana;
         $persentase = ($saldoProyek / $targetDana) * 100;
 
+        $jml_data =  json_decode($this->curl->simple_get($this->API.'/Proyek/getJmlInvestor/'.$id_proyek));
+        $data['jmlInvestor'] = $jml_data;
 
         $peternak = json_decode($this->curl->simple_get($this->API.'/Peternak/detailPeternak/'.$idPeternak));
         $data['peternak'] = $peternak;

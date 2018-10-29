@@ -33,6 +33,9 @@
                 <a href="<?php echo base_url();?>Admin/listProyek"><i class="fa fa-clipboard fa-fw"></i>Proyek</a>
             </li>
             <li>
+                <a href="<?php echo base_url();?>Admin/listProyekSelesai"><i class="fa fa-clipboard fa-fw"></i>Proyek Selesai</a>
+            </li>
+            <li>
                 <a href="<?php echo base_url();?>Admin/listTopup"><i class="fa fa-shopping-cart fa-fw"></i>List Topup</a>
             </li>
             <li>

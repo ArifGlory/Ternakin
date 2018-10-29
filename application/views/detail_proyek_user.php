@@ -12,6 +12,12 @@
 foreach ($gambar_utama as $d){
     $namaGambarUtama = $d->namaGambar;
 }
+
+foreach ($proyek as $c){
+    $idProyek = $c->id_proyek;
+    $saldoProyek = $c->saldo_proyek;
+    $targetDana = $c->target_dana;
+}
 ?>
 
 <div class="section">
@@ -62,6 +68,18 @@ foreach ($gambar_utama as $d){
                         </td>
                     </tr>
                     <tr>
+                        <td> <b>Batas Penggalangan</b></td>
+                        <td><?php echo date("d-F-Y",strtotime($b->batas_galang)); ?></td>
+                    </tr>
+                    <tr>
+                        <td> <b>Mulai Proyek</b></td>
+                        <td><?php echo date("d-F-Y",strtotime($b->mulai_proyek)); ?></td>
+                    </tr>
+                    <tr>
+                        <td> <b>Akhir Proyek</b></td>
+                        <td><?php echo date("d-F-Y",strtotime($b->akhir_proyek)); ?></td>
+                    </tr>
+                    <tr>
                         <td><b>Dana Terkumpul :</b></td>
                         <td>
                             Rp. <?php echo(number_format($b->saldo_proyek,0,',','.')); ?>
@@ -77,7 +95,7 @@ foreach ($gambar_utama as $d){
                     <tr>
                         <td><b>Investor saat ini :</b></td>
                         <td>
-                           <?php echo($b->jml_investor) ?> Unit
+                           <?php echo $jmlInvestor; ?> Orang
                         </td>
                     </tr>
                     <!-- Quantity -->
@@ -107,11 +125,12 @@ foreach ($gambar_utama as $d){
                 <div class="col-sm-4">
                     <br>
                 </div>
-
-                <?php echo form_open_multipart('Utama/invest')?>
+                <?php if ($saldoProyek != $targetDana){ ?>
+                <?php echo form_open_multipart('Investor/lakukanInvestasi/'.$idProyek)?>
                 <input type="hidden" value="<?php echo($b->id_proyek) ?>" id="txt_id" name="txt_id">
                 <button class="btn btn-green btn-lg" type="submit">Investasi di Proyek ini</button>
                 <?php  echo form_close() ;?>
+                <?php } ?>
 
                 <script>
                     function sweet (){

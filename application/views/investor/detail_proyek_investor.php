@@ -8,31 +8,46 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet" />
 
-
+<?php
+foreach ($gambar_utama as $d){
+    $namaGambarUtama = $d->namaGambar;
+}
+?>
 
 <div class="section">
     <div class="container">
-        <?php 
-            foreach ($proyek as $b){
-        ?>
+        <?php
+        foreach ($proyek as $b){
+            if ($b->status == 0){
+                $statusProyek = "Menungu Validasi Admin";
+            }else if ($b->status == 1){
+                $statusProyek = "Di Publish";
+            }else if ($b->status == 2){
+                $statusProyek = "Di Tolak";
+            }else if ($b->status == 3){
+                $statusProyek = "Proyek Sedang dikerjakan";
+            }else if ($b->status == 4){
+                $statusProyek = "Proyek Berakhir";
+            }
+            ?>
         <div class="row">
             <!-- Product Image & Available Colors -->
             <div class="col-sm-6">
                 <div class="product-image-large">
-                    <img src="<?php echo base_url();?>foto/<?php echo($b->foto_usaha); ?>" alt="Item Name"
+                    <img src="<?php echo base_url();?>foto/<?php cetak($namaGambarUtama); ?>" alt="Item Name"
                     height="400" width="600">
                     <br>
                 </div>
-                <h4>Foto lainnya dari Produk ini</h4>
+                <h4>Foto lainnya dari Proyek ini</h4>
                 <div id="myAlert">
                     <div id="links">
-                        <?//php
-                         //   foreach ($gambar as $c){
+                        <?php
+                            foreach ($gambar as $c){
                         ?>
-                        <a href="<?php echo base_url();?>foto/<?//php cetak($c->nama_gambar); ?>" title="Produk">
-                            <img src="<?php echo base_url();?>foto/<?//php cetak($c->nama_gambar); ?>" width="70" height="70" alt="aa">
+                        <a href="<?php echo base_url();?>foto/<?php cetak($c->namaGambar); ?>" title="Produk">
+                            <img src="<?php echo base_url();?>foto/<?php cetak($c->namaGambar); ?>" width="70" height="70" alt="aa">
                         </a>
-                       <?//php } ?>
+                       <?php } ?>
                     </div>
                 </div>
 
@@ -41,20 +56,38 @@
             <!-- End Product Image & Available Colors -->
             <!-- Product Summary & Options -->
             <div class="col-sm-6 product-details">
-                <h3> <?php echo($b->namaProyek) ?></h3>
+                <h3> <?php echo($b->namaProyek) ?> | <?php echo $statusProyek;?> </h3>
                 <br>
                 <table class="shop-item-selections">
                     <!-- Color Selector -->
                     <tr>
                         <td> <b>Jenis :</b></td>
                         <td>
-
+                            <?php cetak($b->kategori); ?>
                         </td>
+                    </tr>
+                    <tr>
+                        <td> <b>Hasil Ternak</b></td>
+                        <td>
+                            <?php cetak($b->hasil_ternak); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> <b>Batas Penggalangan Dana</b></td>
+                        <td><?php echo date("d-F-Y",strtotime($b->batas_galang)); ?></td>
+                    </tr>
+                    <tr>
+                        <td> <b>Mulai Proyek</b></td>
+                        <td><?php echo date("d-F-Y",strtotime($b->mulai_proyek)); ?></td>
+                    </tr>
+                    <tr>
+                        <td> <b>Akhir Proyek</b></td>
+                        <td><?php echo date("d-F-Y",strtotime($b->akhir_proyek)); ?></td>
                     </tr>
                     <tr>
                         <td><b>Dana Terkumpul :</b></td>
                         <td>
-                            Rp. <?php echo(number_format(100000,0,',','.')); ?>
+                            Rp. <?php echo(number_format($b->saldo_proyek,0,',','.')); ?>
                         </td>
                     </tr>
                     <tr>
@@ -65,21 +98,9 @@
                     </tr>
                     <!-- Size Selector -->
                     <tr>
-                        <td><b>Investasi anda :</b></td>
+                        <td><b>Investor saat ini :</b></td>
                         <td>
-                           Rp.1.000.000
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><b>Estimasi Profit :</b></td>
-                        <td>
-                            10%
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><b>Uang Kembali :</b></td>
-                        <td>
-                            Rp. 1.100.0000
+                           <?php echo $jmlInvestor; ?> Orang
                         </td>
                     </tr>
                     <!-- Quantity -->
@@ -90,8 +111,8 @@
 
                 </div>
                 <div class="progress">
-                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
-                        40%
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="<?php cetak($persentase); ?>" aria-valuemin="0" aria-valuemax="100" style="width:<?php cetak($persentase); ?>%">
+                        <?php cetak($persentase); ?>%
                     </div>
                 </div>
                 <div class="col-sm-12 product-image-large">

@@ -63,6 +63,13 @@
                             <td style="width: 190px;" align="center">
                                 <div>
                                     <a href="<?php echo base_url();?>Admin/detailProyek/<?php cetak($b->id_proyek) ?>" class="btn btn-success btn-xs">Lihat</a>
+                                    <?php if ($b->target_dana == $b->saldo_proyek){ ?>
+                                    <a href="<?php echo base_url();?>Admin/detailProyek/<?php cetak($b->id_proyek) ?>" class="btn btn-warning btn-xs">Penggalangan Selesai</a>
+                                    <?php }else if ($tanggalNow > $b->batas_galang && $b->saldo_proyek < $b->target_dana)  { ?>
+                                        <a href="<?php echo base_url();?>Admin/detailProyek/<?php cetak($b->id_proyek) ?>" class="btn btn-danger btn-xs">Batas Waktu Galang Habis</a>
+                                    <?php } else if ($b->status == 4){ ?>
+                                        <a href="<?php echo base_url();?>Admin/detailProyek/<?php cetak($b->id_proyek) ?>" class="btn btn-blue btn-xs">Proyek Selesai</a>
+                                    <?php } ?>
                                 </div>
                             </td>
                         </tr>
